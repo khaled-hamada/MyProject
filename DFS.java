@@ -26,17 +26,22 @@ public class DFS {
         private int generatedStates = 0;
         //number of explored states 
         private int exploredStates = 0;
+        // a flag to indicate whether to run the safe algorithm or the blind one 
+        private boolean runSafeVersion ;
+        
         //deafult constructor 
         public DFS(){
             this.Queens = 8;
             this.startStates =  new ArrayList<State>();
             this.allPoints = new Point[Queens][Queens];
+            this.runSafeVersion = true;
         }
         
-	public DFS(int queens){
+	public DFS(int queens , boolean safe){
             this.Queens = queens;
             this.startStates =  new ArrayList<State>();
             this.allPoints = new Point[Queens][Queens];
+            this.runSafeVersion  = safe ;
         }
 	
         
@@ -100,12 +105,11 @@ public class DFS {
             generateInitialStates();
             //run DFS 
             State solution = new State() ;
-            boolean flag = false;
+           
             for(State state : startStates){
                 solution = runDFS(state);
-                flag = true;
                 //we need only on solution 
-                if (flag)
+                if (solution != null)
                     break ;
 
             }
@@ -138,7 +142,17 @@ public class DFS {
                 // i.e if Number of queens =8 
                 // the algorithm will find the 92 different solution and print them 
                 // but in this case i need only the first solution the algorithm has found 
-                return state2;				
+                if(this.runSafeVersion)
+                    return state2;
+                //if we run the blind version we need to return only a safe solution 
+                else {
+                    //if the solution is safe return it 
+                    if(isSafeSolution(state2))
+                        return state2;
+                    //else continue with a new state from the frontier 
+                    else
+                        continue ;
+                }
             }
 
             //place queen in the next row 
@@ -146,9 +160,14 @@ public class DFS {
             //clear list of safe points to add new ones in the current row 
             l.clear();
             for(Point point : this.allPoints[currentLineNum]){
-                //only choose safe states 
-                if(isSafe(point, state2.getPointList())){
-                        l.add(point);
+                if(this.runSafeVersion){
+                    //only choose safe states 
+                    if(isSafe(point, state2.getPointList())){
+                         l.add(point);
+                    }
+               }
+               else {
+                  l.add(point);   
                 }
             }
 
@@ -194,6 +213,18 @@ public class DFS {
 		}
 		return true;
 	}
+        
+         private boolean isSafeSolution(State state){
+            List<Point> pointList = state.getPointList();
+            for(Point p: pointList){
+                if(!isSafe(p, pointList))
+                    // not a safe solution 
+                    return false;
+            }
+            //all points pass the test so its a fafe solution        
+            return true ;
+        }
+
         
        
 }
