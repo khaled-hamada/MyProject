@@ -173,8 +173,8 @@ public class DFS {
                 }
             }
 
-            //shuffle point to get a random solution only in case of safe version 
-           // if(this.runSafeVersion){
+            //shuffle point to get a random solution 
+           
                 for(int i =0; i<l.size() ;i++){
                     int j= (int)(Math.random() * l.size());
                     Point p1 =l.get(i);
@@ -182,7 +182,7 @@ public class DFS {
                     l.set(i, p2);
                     l.set(j, p1);
                 }
-           // }
+           
            //genrate new states depending on the safe points that we have found 
            for(Point p:l){
                 State newState = new State();
@@ -210,8 +210,10 @@ public class DFS {
             //so there is only on queen in each row , so we do not need to check row for attacks 
             //we only need to check columns , diagonals (main and sub diagonals )
 		for(Point point2 : list){
-                        // do not comapre the same point with itself 
-                        if(point.getX() == point2.getX() && point.getY() == point2.getY())
+                        // do not comapre the same point with itself in case of blind version 
+                        // 
+                        if(point.getX() == point2.getX() && point.getY() == point2.getY() 
+                                && !this.runSafeVersion )
                             //skip it 
                             continue ; 
                         else if(point2.getY() == point.getY() 
