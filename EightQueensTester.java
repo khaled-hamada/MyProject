@@ -16,7 +16,7 @@ public class EightQueensTester {
         boolean runSafeAlgorithm = false;
         long startTime = System.currentTimeMillis();
         
-        DFS d = new DFS(10 , runSafeAlgorithm);
+        DFS d = new DFS(12 , runSafeAlgorithm);
         State s = d.getSolution();
         int gStates = d.getGeneratedStatesNumber();
         int exStates = d.getExploredStatesNumber();
